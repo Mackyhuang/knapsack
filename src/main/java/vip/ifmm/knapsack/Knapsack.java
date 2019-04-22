@@ -8,7 +8,17 @@ package vip.ifmm.knapsack;
  */
 public class Knapsack {
 
-    ProducingSack producingSack = null;
+    //Double Check Locking 双检查锁机制下实现的懒汉式单例模式
+    public static volatile ProducingSack producingSack = null;
+
+    public Knapsack sew(){
+        synchronized (Knapsack.class){
+            if (producingSack == null){
+                producingSack = new ProducingSack();
+            }
+        }
+        return this;
+    }
 
     /**
      * 获取一个指定的实例
@@ -17,8 +27,10 @@ public class Knapsack {
      * @return
      */
     public <T> T takeOutInstance(Class<T> clazz){
-        if (producingSack == null){
-            producingSack = new ProducingSack();
+        synchronized (Knapsack.class){
+            if (producingSack == null){
+                producingSack = new ProducingSack();
+            }
         }
         return producingSack.producingObject(clazz);
     }

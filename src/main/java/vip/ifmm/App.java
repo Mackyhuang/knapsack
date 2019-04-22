@@ -15,7 +15,7 @@ public class App
         Knapsack knapsack = new Knapsack();
         QualifierSack.bindQualifierClassToPool(Person.class, Stu.class);
         QualifierSack.bindQualifierClassToPool(Person.class, Teacher.class);
-        ClassRoom classRoom = knapsack.takeOutInstance(ClassRoom.class);
+        ClassRoom classRoom = knapsack.sew().takeOutInstance(ClassRoom.class);
         System.out.println(classRoom);
 
         QualifierSack.bindQualifierClassToPool(Node.class, NodeA.class);
