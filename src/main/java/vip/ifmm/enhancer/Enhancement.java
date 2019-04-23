@@ -37,7 +37,8 @@ public class Enhancement implements MethodInterceptor {
         //设置回调，代理类上的方法调用时会调用Callback -> 需要实现intercept
         enhancer.setCallback(this);
         //返回动态代理对象
-        return enhancer.create();
+        Object result = enhancer.create();
+        return result;
     }
 
     @Override
@@ -46,14 +47,14 @@ public class Enhancement implements MethodInterceptor {
         Annotation hasAnnotation = method.getAnnotation(this.annotation);
         //若指定注解为空 则无需使用增强方法，直接执行原本的方法
         if (hasAnnotation == null){
-            return proxy.invokeSuper(obj, args);
+            return method.invoke(target, args);
         }
         //执行 前 增强
         adapter.preInvoke();
         //调用实际的业务方法
         Object result = null;
         try {
-            result = proxy.invokeSuper(obj, args);
+            result = method.invoke(target, args);
             //执行 后 增强
             adapter.postInvoke();
         } catch (Exception e){

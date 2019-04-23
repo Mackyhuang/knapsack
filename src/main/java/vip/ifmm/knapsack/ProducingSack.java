@@ -168,9 +168,6 @@ public class ProducingSack {
             if (paramObjectList.size() == 0){
                 return constructor.newInstance();
             }else {
-                paramObjectList.forEach(tt -> {
-                    System.out.println(tt.getClass().getTypeName());
-                });
                 return constructor.newInstance(paramObjectList.toArray());
             }
         } catch (Exception e) {

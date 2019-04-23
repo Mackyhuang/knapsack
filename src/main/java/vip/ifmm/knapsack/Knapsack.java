@@ -1,5 +1,7 @@
 package vip.ifmm.knapsack;
 
+import vip.ifmm.enhancer.EnhancementDriver;
+
 /**
  * author: mackyhuang
  * email: mackyhuang@163.com
@@ -33,5 +35,21 @@ public class Knapsack {
             }
         }
         return producingSack.producingObject(clazz);
+    }
+
+    public <T> T enhanceInstance(Class<T> clazz, Class adapter, Class annotation){
+        synchronized (Knapsack.class){
+            if (producingSack == null){
+                producingSack = new ProducingSack();
+            }
+        }
+        T target = producingSack.producingObject(clazz);
+        T result = null;
+        try {
+            result = EnhancementDriver.prepare(target, adapter, annotation);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
     }
 }
