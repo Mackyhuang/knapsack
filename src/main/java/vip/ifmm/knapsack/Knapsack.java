@@ -39,6 +39,14 @@ public class Knapsack {
         return producingSack.producingObject(clazz);
     }
 
+    /**
+     * 获取一个指定的类，并且获得这个类的代理类
+     * @param clazz
+     * @param adapter
+     * @param annotation
+     * @param <T>
+     * @return
+     */
     public <T> T enhanceInstance(Class<T> clazz, Class adapter, Class annotation){
         synchronized (Knapsack.class){
             if (producingSack == null){
@@ -46,7 +54,8 @@ public class Knapsack {
             }
         }
         T result = null;
-        if ((result = (T) EnhancementDriver.proxyObjectPool.get(clazz)) != null){
+        String key = EnhancementDriver.proxyPoolKeyRing(clazz, adapter, annotation);
+        if ((result = (T) EnhancementDriver.proxyObjectPool.get(key)) != null){
             return result;
         }
         T target = producingSack.producingObject(clazz);

@@ -14,7 +14,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class EnhancementDriver {
 
 //    public static Map<Class<?>, Map<Annotation, Map<Class<?>, Object>>> proxyObjectPool = new ConcurrentHashMap<>();
-    public static Map<Class<?>, Object> proxyObjectPool = new ConcurrentHashMap<>();
+    public static Map<String, Object> proxyObjectPool = new ConcurrentHashMap<>();
 
     /**
      * <p>I need you to tell me three important factors</p>
@@ -35,9 +35,24 @@ public class EnhancementDriver {
         //调用管理类的Bind方法返回一个被增强后的实例
         T result = (T) enhancement.bind(target, adapterObj, annotation);
         if (result != null){
-            proxyObjectPool.put(target.getClass(), result);
+            String key = proxyPoolKeyRing(target.getClass(), adapter, annotation);
+            proxyObjectPool.put(key, result);
         }
         return result;
     }
-    
+
+    /**
+     * 将一个代理类放进proxyObjectPool，需要一个key，这个方法为你提供专属的key
+     * @param target
+     * @param adapter
+     * @param annotation
+     * @return
+     */
+    public static String proxyPoolKeyRing(Class target, Class adapter, Class annotation){
+        StringBuilder keyHash = new StringBuilder();
+        keyHash.append(target.hashCode());
+        keyHash.append(adapter.hashCode());
+        keyHash.append(annotation.hashCode());
+        return keyHash.toString();
+    }
 }
