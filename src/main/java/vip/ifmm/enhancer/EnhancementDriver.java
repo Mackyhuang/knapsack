@@ -1,5 +1,9 @@
 package vip.ifmm.enhancer;
 
+import java.lang.annotation.Annotation;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 /**
  * <p>Enhance the main class</p>
  * author: mackyhuang
@@ -8,6 +12,9 @@ package vip.ifmm.enhancer;
  * motto: Le vent se lève, il faut tenter de vivre
  */
 public class EnhancementDriver {
+
+//    public static Map<Class<?>, Map<Annotation, Map<Class<?>, Object>>> proxyObjectPool = new ConcurrentHashMap<>();
+    public static Map<Class<?>, Object> proxyObjectPool = new ConcurrentHashMap<>();
 
     /**
      * <p>I need you to tell me three important factors</p>
@@ -18,7 +25,7 @@ public class EnhancementDriver {
      * @throws IllegalAccessException
      * @throws InstantiationException
      */
-    public static <T> T prepare(Object target, Class adapter, Class annotation) throws IllegalAccessException, InstantiationException {
+    public static <T> T prepare(T target, Class adapter, Class annotation) throws IllegalAccessException, InstantiationException {
         //创建增强管理类
         Enhancement enhancement = new Enhancement();
         //通过Class创建目标类的实例
@@ -26,7 +33,11 @@ public class EnhancementDriver {
         //通过Class创建接口的实例
         EnhancementAdapter adapterObj = (EnhancementAdapter) adapter.newInstance();
         //调用管理类的Bind方法返回一个被增强后的实例
-        Object result = enhancement.bind(target, adapterObj, annotation);
-        return (T) result;
+        T result = (T) enhancement.bind(target, adapterObj, annotation);
+        if (result != null){
+            proxyObjectPool.put(target.getClass(), result);
+        }
+        return result;
     }
+    
 }

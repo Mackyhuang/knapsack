@@ -2,6 +2,8 @@ package vip.ifmm.knapsack;
 
 import vip.ifmm.enhancer.EnhancementDriver;
 
+import java.lang.annotation.Annotation;
+
 /**
  * author: mackyhuang
  * email: mackyhuang@163.com
@@ -43,8 +45,11 @@ public class Knapsack {
                 producingSack = new ProducingSack();
             }
         }
-        T target = producingSack.producingObject(clazz);
         T result = null;
+        if ((result = (T) EnhancementDriver.proxyObjectPool.get(clazz)) != null){
+            return result;
+        }
+        T target = producingSack.producingObject(clazz);
         try {
             result = EnhancementDriver.prepare(target, adapter, annotation);
         } catch (Exception e) {
