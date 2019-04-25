@@ -3,6 +3,8 @@ package vip.ifmm.enhancer;
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
+import vip.ifmm.entity.EnhanceInfo;
+import vip.ifmm.exception.DoProxyException;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationHandler;
@@ -11,9 +13,15 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.Proxy;
 
 /**
+ * 专门为目标对象生成代理类<
+ * 不仅实现了基于cglib的动态代理，还实现基于jdk的动态代理
+ * 如果你需要被代理的类，是一个不被final修饰的类, 那么会自动调用cglib动态带出
+ * 否则的话会尝试使用jdk的动态代理，基于实现接口的代理
+ * 当然，如果连接口都没有，那可就只能无情报错 (注意，这里报错是在调用处，你总是找不到一个类来接收它的赋值)
  * <p>This is where you manage your <strong>enhancement objects</strong> and <strong>enhancement methods</strong> and <strong>enhancement annotation</strong></p>
+ * <p>both cglib and JDK can be used </p>
  * <P>and building this class requires the three sections mentioned above</P>
- * <p>enhancement methods needs to implement an interface {@link EnhancementAdapter}</p>
+ * <p>enhancement methods needs to implement an interface {@see EnhancementAdapter}</p>
  * author: mackyhuang
  * email: mackyhuang@163.com
  * date: 2019/4/23
@@ -28,20 +36,31 @@ public class Enhancement implements InvocationHandler, net.sf.cglib.proxy.Invoca
     //增强注解
     private Class annotation;
 
-    public Object bind(Object target, EnhancementAdapter adapter, Class annotation){
+    /**
+     * 初始化类字段， 生成代理对象
+     * @return 生成的代理对象
+     */
+    public Object doProxy(Object target, EnhancementAdapter adapter, Class annotation){
         this.target = target;
         this.adapter = adapter;
         this.annotation = annotation;
         Object result = null;
         if (!Modifier.isFinal(target.getClass().getModifiers())){
-            result = cglibDoProxy(target);
+            result = cglibDoProxy();
         } else {
-            result = jdkDoProxy(target);
+            try {
+                result = jdkDoProxy();
+            } catch (ClassCastException e){
+                throw new DoProxyException(String.format("%s 这个类 既被final修饰，也没有接口，所以无法生成代理对象 ", target.getClass()), e);
+            }
         }
         return result;
     }
 
-    private Object cglibDoProxy(Object target){
+    /**
+     * 基于cglib动态代理生成代理对象
+     */
+    private Object cglibDoProxy(){
         //创建增强器
         Enhancer enhancer = new Enhancer();
         //告知增强对象
@@ -53,15 +72,16 @@ public class Enhancement implements InvocationHandler, net.sf.cglib.proxy.Invoca
     }
 
     /**
-     * 使用jdk的动态代理实现AOP
-     * @param target
-     * @return
+     * 基于jdk动态代理生成代理对象
      */
-    private Object jdkDoProxy(Object target){
+    private Object jdkDoProxy(){
         //jdk动态代理生成代理对象
-        return Proxy.newProxyInstance(target.getClass().getClassLoader(), target.getClass().getInterfaces(), this);
+        return Proxy.newProxyInstance(this.target.getClass().getClassLoader(), target.getClass().getInterfaces(), this);
     }
 
+    /**
+     * 实现cglib和jdk的InvocationHandler就必须实现这个方法作为回调
+     */
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         //获取代理类所执行方法的指定注解
@@ -70,21 +90,25 @@ public class Enhancement implements InvocationHandler, net.sf.cglib.proxy.Invoca
         if (hasAnnotation == null){
             return method.invoke(target, args);
         }
-        //执行前 增强
-        adapter.preInvoke();
+        EnhanceInfo enhanceInfo = new EnhanceInfo(target, method, args);
+        //执行前的操作
+        adapter.preInvoke(enhanceInfo);
         //调用实际的业务方法
         Object result = null;
         try {
             result = method.invoke(target, args);
-            //执行后 增强
-            adapter.postInvoke();
+            enhanceInfo.setResult(result);
+            //执行后的操作
+            adapter.postInvoke(enhanceInfo);
+            return enhanceInfo.getResult();
         } catch (Exception e){
-            //抛出异常以后的处理
-            adapter.postThrowing(e);
+            enhanceInfo.setException(e);
+            //抛出异常后的操作
+            adapter.postThrowing(enhanceInfo);
+            return enhanceInfo.getResult();
         } finally {
-            //返回结果的处理
-            adapter.postReturning(result);
+            //返回结果时的操作
+            adapter.postReturning(enhanceInfo);
         }
-        return result;
     }
 }

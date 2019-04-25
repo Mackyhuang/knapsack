@@ -6,10 +6,9 @@ import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
 import org.junit.Test;
-import vip.ifmm.entity.ClassRoom;
-import vip.ifmm.entity.Stu;
-import vip.ifmm.entity.Teacher;
+import vip.ifmm.entity.*;
 import vip.ifmm.knapsack.Knapsack;
+import vip.ifmm.knapsack.QualifierSack;
 
 import java.lang.reflect.Method;
 
@@ -53,6 +52,19 @@ public class AppTest
         //返回动态代理对象
         Object result = enhancer.create();
         System.out.println(result);
+    }
+
+    @Test
+    public void enhanceWhat(){
+        Knapsack knapsack = new Knapsack();
+        QualifierSack.bindQualifierClassToPool(Person.class, Stu.class);
+        QualifierSack.bindQualifierClassToPool(Person.class, Teacher.class);
+//        ClassRoom classRoom = knapsack.sew().takeOutInstance(ClassRoom.class);
+        ClassRoom classRoom = (ClassRoom) knapsack.sew().enhanceInstance(ClassRoom.class, SimpleAdapter.class, Recordlog.class);
+        ClassRoom classRoom1 = (ClassRoom) knapsack.sew().enhanceInstance(ClassRoom.class, SimpleAdapter.class, Recordlog.class);
+        System.out.println(classRoom1 == classRoom);
+        System.out.println(classRoom);
+        System.out.println(classRoom.sleep(1));
     }
 
 
