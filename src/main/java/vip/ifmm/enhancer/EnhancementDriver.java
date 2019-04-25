@@ -25,7 +25,7 @@ public class EnhancementDriver {
      * @throws IllegalAccessException
      * @throws InstantiationException
      */
-    public static <T> T prepare(T target, Class adapter, Class annotation) throws IllegalAccessException, InstantiationException {
+    public static Object prepare(Object target, Class adapter, Class annotation) throws IllegalAccessException, InstantiationException {
         //创建增强管理类
         Enhancement enhancement = new Enhancement();
         //通过Class创建目标类的实例
@@ -33,7 +33,7 @@ public class EnhancementDriver {
         //通过Class创建接口的实例
         EnhancementAdapter adapterObj = (EnhancementAdapter) adapter.newInstance();
         //调用管理类的Bind方法返回一个被增强后的实例
-        T result = (T) enhancement.bind(target, adapterObj, annotation);
+        Object result = enhancement.bind(target, adapterObj, annotation);
         if (result != null){
             String key = proxyPoolKeyRing(target.getClass(), adapter, annotation);
             proxyObjectPool.put(key, result);

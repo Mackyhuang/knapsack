@@ -7,6 +7,8 @@ import net.sf.cglib.proxy.MethodProxy;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.lang.reflect.Proxy;
 
 /**
  * <p>This is where you manage your <strong>enhancement objects</strong> and <strong>enhancement methods</strong> and <strong>enhancement annotation</strong></p>
@@ -30,21 +32,34 @@ public class Enhancement implements InvocationHandler, net.sf.cglib.proxy.Invoca
         this.target = target;
         this.adapter = adapter;
         this.annotation = annotation;
+        Object result = null;
+        if (!Modifier.isFinal(target.getClass().getModifiers())){
+            result = cglibDoProxy(target);
+        } else {
+            result = jdkDoProxy(target);
+        }
+        return result;
+    }
 
+    private Object cglibDoProxy(Object target){
         //创建增强器
         Enhancer enhancer = new Enhancer();
         //告知增强对象
         enhancer.setSuperclass(this.target.getClass());
         //设置回调，代理类上的方法调用时会调用Callback -> 需要实现intercept
         enhancer.setCallback(this);
-        //返回动态代理对象
-        Object result = enhancer.create();
-        return result;
+        //返回cglib生成的动态代理对象
+        return enhancer.create();
     }
 
-    //
-    public Object intercept(Object obj, Method method, Object[] args, MethodProxy proxy) throws Throwable {
-        return null;
+    /**
+     * 使用jdk的动态代理实现AOP
+     * @param target
+     * @return
+     */
+    private Object jdkDoProxy(Object target){
+        //jdk动态代理生成代理对象
+        return Proxy.newProxyInstance(target.getClass().getClassLoader(), target.getClass().getInterfaces(), this);
     }
 
     @Override
@@ -55,13 +70,13 @@ public class Enhancement implements InvocationHandler, net.sf.cglib.proxy.Invoca
         if (hasAnnotation == null){
             return method.invoke(target, args);
         }
-        //执行 前 增强
+        //执行前 增强
         adapter.preInvoke();
         //调用实际的业务方法
         Object result = null;
         try {
             result = method.invoke(target, args);
-            //执行 后 增强
+            //执行后 增强
             adapter.postInvoke();
         } catch (Exception e){
             //抛出异常以后的处理
@@ -70,7 +85,6 @@ public class Enhancement implements InvocationHandler, net.sf.cglib.proxy.Invoca
             //返回结果的处理
             adapter.postReturning(result);
         }
-
         return result;
     }
 }

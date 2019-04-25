@@ -47,13 +47,13 @@ public class Knapsack {
      * @param <T>
      * @return
      */
-    public <T> T enhanceInstance(Class<T> clazz, Class adapter, Class annotation){
+    public <T> Object enhanceInstance(Class<T> clazz, Class adapter, Class annotation){
         synchronized (Knapsack.class){
             if (producingSack == null){
                 producingSack = new ProducingSack();
             }
         }
-        T result = null;
+        Object result = null;
         String key = EnhancementDriver.proxyPoolKeyRing(clazz, adapter, annotation);
         if ((result = (T) EnhancementDriver.proxyObjectPool.get(key)) != null){
             return result;
