@@ -5,6 +5,7 @@ import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
 /**
@@ -16,7 +17,7 @@ import java.lang.reflect.Method;
  * date: 2019/4/23
  * motto: Le vent se lève, il faut tenter de vivre
  */
-public class Enhancement implements MethodInterceptor {
+public class Enhancement implements InvocationHandler, net.sf.cglib.proxy.InvocationHandler {
 
     //增强对象
     private Object target;
@@ -41,8 +42,13 @@ public class Enhancement implements MethodInterceptor {
         return result;
     }
 
-    @Override
+    //
     public Object intercept(Object obj, Method method, Object[] args, MethodProxy proxy) throws Throwable {
+        return null;
+    }
+
+    @Override
+    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         //获取代理类所执行方法的指定注解
         Annotation hasAnnotation = method.getAnnotation(this.annotation);
         //若指定注解为空 则无需使用增强方法，直接执行原本的方法
