@@ -1,10 +1,8 @@
-package vip.ifmm.enhancer;
+package vip.ifmm.knapsack.enhancer;
 
 import net.sf.cglib.proxy.Enhancer;
-import net.sf.cglib.proxy.MethodInterceptor;
-import net.sf.cglib.proxy.MethodProxy;
-import vip.ifmm.entity.EnhanceInfo;
-import vip.ifmm.exception.DoProxyException;
+import vip.ifmm.knapsack.entity.EnhanceInfo;
+import vip.ifmm.knapsack.exception.DoProxyException;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationHandler;
@@ -13,19 +11,15 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.Proxy;
 
 /**
- * 专门为目标对象生成代理类<
+ * 专门为目标对象生成代理类
  * 不仅实现了基于cglib的动态代理，还实现基于jdk的动态代理
  * 如果你需要被代理的类，是一个不被final修饰的类, 那么会自动调用cglib动态带出
  * 否则的话会尝试使用jdk的动态代理，基于实现接口的代理
  * 当然，如果连接口都没有，那可就只能无情报错 (注意，这里报错是在调用处，你总是找不到一个类来接收它的赋值)
- * <p>This is where you manage your <strong>enhancement objects</strong> and <strong>enhancement methods</strong> and <strong>enhancement annotation</strong></p>
- * <p>both cglib and JDK can be used </p>
- * <P>and building this class requires the three sections mentioned above</P>
- * <p>enhancement methods needs to implement an interface {@see EnhancementAdapter}</p>
- * author: mackyhuang
- * email: mackyhuang@163.com
- * date: 2019/4/23
- * motto: Le vent se lève, il faut tenter de vivre
+ * 将需要增强的业务操作，完成在这个接口的实现类中{@see EnhancementAdapter}
+ * @author: mackyhuang
+ * <p>email: mackyhuang@163.com <p>
+ * <p>date: 2019/4/23 </p>
  */
 public class Enhancement implements InvocationHandler, net.sf.cglib.proxy.InvocationHandler {
 
@@ -48,11 +42,7 @@ public class Enhancement implements InvocationHandler, net.sf.cglib.proxy.Invoca
         if (!Modifier.isFinal(target.getClass().getModifiers())){
             result = cglibDoProxy();
         } else {
-            try {
-                result = jdkDoProxy();
-            } catch (ClassCastException e){
-                throw new DoProxyException(String.format("%s 这个类 既被final修饰，也没有接口，所以无法生成代理对象 ", target.getClass()), e);
-            }
+            result = jdkDoProxy();
         }
         return result;
     }
@@ -92,7 +82,9 @@ public class Enhancement implements InvocationHandler, net.sf.cglib.proxy.Invoca
         }
         EnhanceInfo enhanceInfo = new EnhanceInfo(target, method, args);
         //执行前的操作
-        adapter.preInvoke(enhanceInfo);
+        if (adapter.preInvoke(enhanceInfo)){
+            return enhanceInfo.getResult();
+        }
         //调用实际的业务方法
         Object result = null;
         try {

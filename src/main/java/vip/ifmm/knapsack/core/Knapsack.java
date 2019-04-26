@@ -1,14 +1,12 @@
-package vip.ifmm.knapsack;
+package vip.ifmm.knapsack.core;
 
-import vip.ifmm.enhancer.EnhancementDriver;
+import vip.ifmm.knapsack.enhancer.EnhancementDriver;
 
-import java.lang.annotation.Annotation;
 
-/**
- * author: mackyhuang
- * email: mackyhuang@163.com
- * date: 2019/4/22
- * motto: Le vent se lève, il faut tenter de vivre
+ /**
+ * @author: mackyhuang
+ * <p>email: mackyhuang@163.com <p>
+ * <p>date: 2019/4/22 </p>
  */
 public class Knapsack {
 

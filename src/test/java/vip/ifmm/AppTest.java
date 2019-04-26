@@ -6,9 +6,9 @@ import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
 import org.junit.Test;
-import vip.ifmm.entity.*;
-import vip.ifmm.knapsack.Knapsack;
-import vip.ifmm.knapsack.QualifierSack;
+import vip.ifmm.knapsack.entity.*;
+import vip.ifmm.knapsack.core.Knapsack;
+import vip.ifmm.knapsack.core.QualifierSack;
 
 import java.lang.reflect.Method;
 

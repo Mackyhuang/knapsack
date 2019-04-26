@@ -1,5 +1,12 @@
-package vip.ifmm.exception;
+package vip.ifmm.knapsack.exception;
 
+/**
+ * 依赖注入相关异常
+ * <p>Dependency Injection Related Anomalies</p>
+ * @author: mackyhuang
+ * <p>email: mackyhuang@163.com <p>
+ * <p>date: 2019/4/22 </p>
+ */
 public class InjectionException extends RuntimeException{
 
     public InjectionException(){

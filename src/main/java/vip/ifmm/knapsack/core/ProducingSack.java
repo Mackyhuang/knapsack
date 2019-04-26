@@ -1,6 +1,6 @@
-package vip.ifmm.knapsack;
+package vip.ifmm.knapsack.core;
 
-import vip.ifmm.exception.InjectionException;
+import vip.ifmm.knapsack.exception.InjectionException;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -12,17 +12,18 @@ import java.util.*;
 import java.util.function.Consumer;
 
 /**
- * author: mackyhuang
- * email: mackyhuang@163.com
- * date: 2019/4/22
- * motto: Le vent se lève, il faut tenter de vivre
+ * 通过字段、构造函数、参数 实例化相应的对象
+ * @author: mackyhuang
+ * <p>email: mackyhuang@163.com <p>
+ * <p>date: 2019/4/22 </p>
  */
 public class ProducingSack {
 
+    //即将创建的对象的类池
     private Set<Class<?>> processClassPool = Collections.synchronizedSet(new HashSet<>());
 
     /**
-     * 重载提供接口
+     * 从容器通过指定的Class获取一个相应的对象
      * @param clazz
      * @param <T>
      * @return
@@ -32,60 +33,36 @@ public class ProducingSack {
     }
 
     /**
-     * 先去单例池子查看有没有 没有就通过构造器（一个方法）创建， 然后判断是不是单例，是的话就放进单例池。
+     * 从容器通过指定的Class获取一个相应的对象
+     * 并且可以通过Consumer对生成的对象做其他操作
      * @param clazz
      * @param consumer
      * @param <T>
      * @return
      */
     public <T> T producingObject(Class<T> clazz, Consumer<T> consumer){
+        //判断单例对象池中是否有这个对象
         Object object = SingletonSack.singletonObjectPool.get(clazz);
         if (object != null){
             return (T) object;
         }
+
         //检查类的构造器
-        ArrayList<Constructor<T>> constructors = new ArrayList<>();
         T target = null;
-        for (Constructor constructor : clazz.getDeclaredConstructors()){
-            if (!constructor.isAnnotationPresent(Inject.class) && constructor.getParameterCount() > 0){
-                continue;
-            }
-            constructor.setAccessible(true);
-//            if (!constructor.isAccessible()){
-//                continue;
-//            }
-            constructors.add(constructor);
-        }
-        if (constructors.size() > 1){
-            throw new InjectionException(String.format("%s 找到了多个可用来以来注入的构造器 ", clazz.getCanonicalName()));
-        }
-        if (constructors.isEmpty()){
-            throw new InjectionException(String.format("%s 没有可用来依赖注入的构造器 ", clazz.getCanonicalName()));
-        }
+        ArrayList<Constructor<T>> constructors = checkAvaliableContructor(clazz);
         //通过构造器构造实例
         processClassPool.add(clazz);
-
         target = producingFromConstruct(constructors.iterator().next());
-
         processClassPool.remove(clazz);
-        //处理生成的对象
+        //生成对象的单例判断和操作
+        handleSingletonObject(clazz, target);
 
-        boolean isSingleton = clazz.isAnnotationPresent(Singleton.class);
-        //这个判断是查询单例对象池和单例类池里面 是否存在这个类或对象
-        if (!isSingleton){
-            isSingleton = SingletonSack.singleTonClassPool.containsKey(clazz);
-        }
-
-        if (isSingleton){
-            SingletonSack.singletonObjectPool.put(clazz, target);
-        }
-        //consumer
+        //consumer的额外操作
         if (consumer != null){
             consumer.accept(target);
         }
         //为对象填充字段的注入
         fillFieldIntoObject(target);
-
         return target;
     }
 
@@ -233,6 +210,45 @@ public class ProducingSack {
             } catch (Exception e) {
                 throw new InjectionException(String.format("为 %s 注入字段 %s 时出现错误 ", object.getClass().getCanonicalName(), currentField.getName()), e);
             }
+        }
+    }
+
+    /**
+     * 对于需要实例化的类的构造函数的验证
+     * 若被@Inject注解修饰，那么无论有参无参都被允许
+     * 若没有，则只有无参构造函数（包括默认的构造函数）才会被允许
+     */
+    private <T> ArrayList checkAvaliableContructor(Class<T> clazz){
+        ArrayList<Constructor<T>> constructors = new ArrayList<>();
+        for (Constructor constructor : clazz.getDeclaredConstructors()){
+            if (!constructor.isAnnotationPresent(Inject.class) && constructor.getParameterCount() > 0){
+                continue;
+            }
+            constructor.setAccessible(true);
+            constructors.add(constructor);
+        }
+        if (constructors.size() > 1){
+            throw new InjectionException(String.format("%s 找到了多个可用来以来注入的构造器 ", clazz.getCanonicalName()));
+        }
+        if (constructors.isEmpty()){
+            throw new InjectionException(String.format("%s 没有可用来依赖注入的构造器 ", clazz.getCanonicalName()));
+        }
+        return constructors;
+    }
+
+    /**
+     * 对于生成的对象，进行单例的判断和操作
+     * 只要类被@Singleton修饰，或是存在于单例类池中，就会被放入单例对象池
+     */
+    private <T> void handleSingletonObject(Class<T> clazz, T target){
+        //处理生成的对象
+        boolean isSingleton = clazz.isAnnotationPresent(Singleton.class);
+        //这个判断是查询单例对象池和单例类池里面 是否存在这个类或对象
+        if (!isSingleton){
+            isSingleton = SingletonSack.singleTonClassPool.containsKey(clazz);
+        }
+        if (isSingleton){
+            SingletonSack.singletonObjectPool.put(clazz, target);
         }
     }
 }

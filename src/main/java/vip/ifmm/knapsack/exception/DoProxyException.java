@@ -1,10 +1,11 @@
-package vip.ifmm.exception;
+package vip.ifmm.knapsack.exception;
 
 /**
- * author: mackyhuang
- * email: mackyhuang@163.com
- * date: 2019/4/25
- * motto: Le vent se lève, il faut tenter de vivre
+ * 动态代理相关异常
+ * <p>Dynamic proxy-related anomalies</p>
+ * @author: mackyhuang
+ * <p>email: mackyhuang@163.com <p>
+ * <p>date: 2019/4/25 </p>
  */
 public class DoProxyException extends RuntimeException{
 

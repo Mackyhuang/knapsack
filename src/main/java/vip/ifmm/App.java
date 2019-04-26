@@ -1,8 +1,8 @@
 package vip.ifmm;
 
-import vip.ifmm.entity.*;
-import vip.ifmm.knapsack.Knapsack;
-import vip.ifmm.knapsack.QualifierSack;
+import vip.ifmm.knapsack.entity.*;
+import vip.ifmm.knapsack.core.Knapsack;
+import vip.ifmm.knapsack.core.QualifierSack;
 
 /**
  * Hello world!

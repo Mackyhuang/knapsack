@@ -1,28 +1,25 @@
-package vip.ifmm.knapsack;
+package vip.ifmm.knapsack.core;
 
-import vip.ifmm.exception.InjectionException;
+import vip.ifmm.knapsack.exception.InjectionException;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * author: mackyhuang
- * email: mackyhuang@163.com
- * date: 2019/4/22
- * motto: Le vent se lève, il faut tenter de vivre
+ * 单例对象池和和单例类池的操作类
+ * @author: mackyhuang
+ * <p>email: mackyhuang@163.com <p>
+ * <p>date: 2019/4/22 </p>
  */
 public class SingletonSack {
 
+    //单例对象池
     public static Map<Class<?>, Object> singletonObjectPool = new ConcurrentHashMap<>();
-
+    //单例类池
     public static Map<Class<?>, Class<?>> singleTonClassPool = new ConcurrentHashMap<>();
 
     /**
      * 把一个单例对象绑定到单例对象池中
-     * @param clazz
-     * @param object
-     * @param <T>
-     * @return
      */
     public static <T> void bindSingletonObjectToPool(Class<T> clazz, T object){
         if (singletonObjectPool.put(clazz, object) != null){
@@ -32,20 +29,14 @@ public class SingletonSack {
 
     /**
      * 把一个单例类绑定到单例类池
-     * @param clazz
-     * @param <T>
-     * @return
      */
     public static <T> void bindSingletonClassToPool(Class<T> clazz){
         bindSingletonClassToPool(clazz, clazz);
     }
 
     /**
-     * 实现bindSingletonClassToPool(Class<T> clazz)的功能
+     * 实现 把一个单例类绑定到单例类池 的功能
      * @param parentClazz
-     * @param clazz
-     * @param <T>
-     * @return
      */
     private static <T> void bindSingletonClassToPool(Class<?> parentClazz, Class<T> clazz){
         if(singleTonClassPool.put(parentClazz, clazz) != null){
