@@ -86,23 +86,24 @@ public class ProducingSack {
     /**
      * 通过构造函数 newInstance 一个对象
      * 由于构造函数需要参数，所以这里需要使用 producingFromParameter
-     * @param constructor
-     * @param <T>
-     * @return
      */
     private <T> T producingFromConstruct(Constructor<T> constructor){
         ArrayList<Object> paramObjectList = new ArrayList();
         for (Parameter parameter : constructor.getParameters()){
+            //循环依赖检查
             if (processClassPool.contains(parameter.getType())){
                 throw new InjectionException(String.format("%s 出现循环依赖 ", constructor.getDeclaringClass().getCanonicalName()));
             }
+            //实例化参数
             T paramObject = producingFromParameter(parameter);
             if (paramObject == null){
                 throw new InjectionException(String.format("%s 的构造器参数 %s 为空", constructor.getDeclaringClass().getCanonicalName(), parameter.getName()));
             }
+            //将参数添加进参数列表
             paramObjectList.add(paramObject);
         }
         try {
+            //通过构造函数实例对象
             if (paramObjectList.size() == 0){
                 return constructor.newInstance();
             }else {
@@ -115,34 +116,31 @@ public class ProducingSack {
 
     /**
      * 给参数生成一个实例对象用来依赖注入
-     * @param parameter
-     * @param <T>
-     * @return
      */
+    @SuppressWarnings("unchecked")
     private <T> T producingFromParameter(Parameter parameter){
         Class clazz = parameter.getType();
-        //调用这个函数 在对象池就拿 不在就去类池拿来创建然后放进对象池
+
         T result = (T) producingFromQualifierObjectPool(parameter.getDeclaringExecutable().getDeclaringClass(), parameter.getAnnotations(), clazz);
         if (result != null){
             return result;
         }
-        //为空就代表它都不在上面的俩个容器，直接创建
+        //若它都不在任何池子中，直接创建
         return (T) producingObject(clazz, null);
     }
 
     /**
      * 给字段生成一个对象用来依赖注入
-     * @param field
-     * @param <T>
-     * @return
      */
+    @SuppressWarnings("unchecked")
     private <T> T producingFromField(Field field){
         Class clazz = field.getType();
+
         T result = (T) producingFromQualifierObjectPool(field.getDeclaringClass(), field.getAnnotations(), clazz);
         if (result != null){
             return result;
         }
-
+        //若它都不在任何池子中，直接创建
         return (T) producingObject(clazz, null);
     }
 
@@ -155,13 +153,12 @@ public class ProducingSack {
         ArrayList<Field> fieldList = new ArrayList<>();
         //遍历获取需要注入的字段（被@Inject修饰的）
         for (Field field : object.getClass().getDeclaredFields()){
-            //TODO 私有field无法注入
             if (field.isAnnotationPresent(Inject.class)){
                 field.setAccessible(true);
                 fieldList.add(field);
             }
         }
-        //遍历需要注入的字段，生成对象并设值
+        //遍历需要注入的字段，实例化对象并且注入字段
         Iterator<Field> iterator = fieldList.iterator();
         while (iterator.hasNext()){
             Field currentField = iterator.next();
@@ -179,7 +176,7 @@ public class ProducingSack {
      * 若被@Inject注解修饰，那么无论有参无参都被允许
      * 若没有，则只有无参构造函数（包括默认的构造函数）才会被允许
      */
-    private <T> ArrayList checkAvaliableContructor(Class<T> clazz){
+    private <T> ArrayList<Constructor<T>> checkAvaliableContructor(Class<T> clazz){
         ArrayList<Constructor<T>> constructors = new ArrayList<>();
         for (Constructor constructor : clazz.getDeclaredConstructors()){
             if (!constructor.isAnnotationPresent(Inject.class) && constructor.getParameterCount() > 0){
