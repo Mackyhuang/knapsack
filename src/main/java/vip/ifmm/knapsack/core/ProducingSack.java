@@ -67,59 +67,20 @@ public class ProducingSack {
     }
 
     /**
-     * 内部使用
-     * 通过限定对象池得到对象 如果不存在对象就去限定类池拿类信息创建对象 如果还是没有就返回Null
-     * @param parentClazz
-     * @param annotationArr
-     * @param clazz
-     * @param <T>
-     * @return
+     * 通过限定对象池得到对象
+     * 如果限定对象中不存在这个对象，那么就去限定类池中检查是否有这个类的信息
+     * 如果存在就实例化，如果不存在就返回Null
      */
     @SuppressWarnings("unchecked")
     private <T> T producingFromQualifierObjectPool(Class<?> parentClazz, Annotation[] annotationArr, Class<T> clazz){
-        Map<Annotation, Object> qualifierObjectmapping = QualifierSack.qualifierObjectPool.get(clazz);
         // 如果限定池中确实存在这个parentClazz的对应对象
-        if (qualifierObjectmapping != null){
-            Set<Object> products = new HashSet<>();
-            for (Annotation annotation : annotationArr){
-                Object pending = qualifierObjectmapping.get(annotation);
-                if (pending != null){
-                    products.add(pending);
-                }
-            }
-            if (products.size() > 1){
-                throw new InjectionException(String.format("%s 和 %s 这对关系的对象被重复定义", parentClazz.getCanonicalName(), clazz.getCanonicalName()));
-            }
-            if (!products.isEmpty()){
-                return (T) (products.iterator().next());
-            }
+        T product = isTargetInQualifierObjectPool(parentClazz, annotationArr, clazz);
+        if (product != null){
+            return product;
         }
-        //如果没有就去限定类池查找到对应的类 然后实例化一个对象
-        Map<Annotation, Class<?>> qualifierClassMapping = QualifierSack.qualifierClassPool.get(clazz);
-        if (qualifierClassMapping != null){
-            Set<Class<?>> classes = new HashSet<>();
-            Annotation currentAnno = null;
-            for (Annotation annotation : annotationArr){
-                Class<?> pending = qualifierClassMapping.get(annotation);
-                if (pending != null){
-                    classes.add(pending);
-                    currentAnno = annotation;
-                }
-            }
-            if (classes.size() > 1){
-                throw new InjectionException(String.format("%s 和 %s 这对关系的类被重复定义", parentClazz.getCanonicalName(), clazz.getCanonicalName()));
-            }
-            //若限定类池里面有这个类，就用它生成一个对象 并且使用consumer lambda将这个创建好的对象放进限定对象池
-            if (!classes.isEmpty()){
-                final Annotation finalAnno = currentAnno;
-                T result = (T) producingObject(classes.iterator().next(), target -> {
-                    QualifierSack.bindQualifierObjectToPool((Class<T>)clazz, finalAnno, (T) target);
-                });
-                return result;
-            }
-        }
-        //如果类池也没有，就返回Null
-        return null;
+        //如果没有就去限定类池查找到对应的类 然后实例化一个对象 如果没有会返回Null
+        product = isTargetInQualifierClassPool(parentClazz, annotationArr, clazz);
+        return product;
     }
 
     /**
@@ -250,5 +211,57 @@ public class ProducingSack {
         if (isSingleton){
             SingletonSack.singletonObjectPool.put(clazz, target);
         }
+    }
+
+    /**
+     * 判断当前的限定对象池中是否有指定的对象
+     */
+    @SuppressWarnings("unchecked")
+    private <T> T isTargetInQualifierObjectPool(Class<?> parentClazz, Annotation[] annotationArr, Class<T> clazz){
+        Map<Annotation, Object> qualifierObjectmapping = QualifierSack.qualifierObjectPool.get(clazz);
+        if (qualifierObjectmapping != null){
+            Set<Object> products = new HashSet<>();
+            for (Annotation annotation : annotationArr){
+                Object pending = qualifierObjectmapping.get(annotation);
+                if (pending != null){
+                    products.add(pending);
+                }
+            }
+            if (products.size() > 1){
+                throw new InjectionException(String.format("%s 和 %s 这对关系的对象被重复定义", parentClazz.getCanonicalName(), clazz.getCanonicalName()));
+            }
+            if (!products.isEmpty()){
+                return (T) (products.iterator().next());
+            }
+        }
+        return null;
+    }
+
+    @SuppressWarnings("unchecked")
+    private <T> T isTargetInQualifierClassPool(Class<?> parentClazz, Annotation[] annotationArr, Class<T> clazz){
+        Map<Annotation, Class<?>> qualifierClassMapping = QualifierSack.qualifierClassPool.get(clazz);
+        if (qualifierClassMapping != null){
+            Set<Class<?>> classes = new HashSet<>();
+            Annotation currentAnno = null;
+            for (Annotation annotation : annotationArr){
+                Class<?> pending = qualifierClassMapping.get(annotation);
+                if (pending != null){
+                    classes.add(pending);
+                    currentAnno = annotation;
+                }
+            }
+            if (classes.size() > 1){
+                throw new InjectionException(String.format("%s 和 %s 这对关系的类被重复定义", parentClazz.getCanonicalName(), clazz.getCanonicalName()));
+            }
+            //若限定类池里面有这个类，就用它生成一个对象 并且使用consumer lambda将这个创建好的对象放进限定对象池
+            if (!classes.isEmpty()){
+                final Annotation finalAnno = currentAnno;
+                T result = (T) producingObject(classes.iterator().next(), target -> {
+                    QualifierSack.bindQualifierObjectToPool((Class<T>)clazz, finalAnno, (T) target);
+                });
+                return result;
+            }
+        }
+        return null;
     }
 }
