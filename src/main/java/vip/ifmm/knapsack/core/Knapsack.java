@@ -1,9 +1,13 @@
 package vip.ifmm.knapsack.core;
 
 import vip.ifmm.knapsack.enhancer.EnhancementDriver;
+import vip.ifmm.knapsack.loader.PropertiesLoader;
+
+import java.util.Properties;
+import java.util.Set;
 
 
- /**
+/**
  * @author: mackyhuang
  * <p>email: mackyhuang@163.com <p>
  * <p>date: 2019/4/22 </p>
@@ -23,7 +27,18 @@ public class Knapsack {
                 producingSack = new ProducingSack();
             }
         }
+//        Properties loader = PropertiesLoader.loader(path);
+//        Set<String> keySet = loader.stringPropertyNames();
+//        for (String key : keySet){
+//            if (key.startsWith("qualifier."));
+//
+//        }
         return this;
+    }
+
+    public LinkPoint link(Class parentClazz){
+        LinkPoint linkPoint = new LinkPoint(parentClazz);
+        return linkPoint;
     }
 
     /**

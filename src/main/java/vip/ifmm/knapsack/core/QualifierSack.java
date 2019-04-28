@@ -30,7 +30,7 @@ public class QualifierSack {
      * 对象map根据类限定名和注解觉得唯一性
      * 注解请务必被@Named修饰
      */
-    public static <T> void bindQualifierObjectToPool(Class<T> clazz, Annotation annotation, T object){
+    static <T> void bindQualifierObjectToPool(Class<T> clazz, Annotation annotation, T object){
         if (!annotation.annotationType().isAnnotationPresent(Qualifier.class)){
             throw new InjectionException(String.format("%s 的注解 %s 尚未关联 -> @Qualifier ", object.getClass().getCanonicalName(), annotation.annotationType().getCanonicalName()));
         }
@@ -53,7 +53,7 @@ public class QualifierSack {
      * @param <T>
      * @return
      */
-    public static <T> void bindQualifierClassToPool(Class<?> parentClazz, Class<T> clazz){
+    static <T> void bindQualifierClassToPool(Class<?> parentClazz, Class<T> clazz){
         Annotation[] annotationArr = clazz.getAnnotations();
         for (Annotation annotation : annotationArr){
             if (annotation.annotationType().isAnnotationPresent(Qualifier.class)){

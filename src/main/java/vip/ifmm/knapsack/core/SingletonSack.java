@@ -21,7 +21,7 @@ public class SingletonSack {
     /**
      * 把一个单例对象绑定到单例对象池中
      */
-    public static <T> void bindSingletonObjectToPool(Class<T> clazz, T object){
+    static <T> void bindSingletonObjectToPool(Class<T> clazz, T object){
         if (singletonObjectPool.put(clazz, object) != null){
             throw new InjectionException(String.format("重复定义 %s 这个单例对象 ",clazz.getCanonicalName()));
         }
@@ -30,7 +30,7 @@ public class SingletonSack {
     /**
      * 把一个单例类绑定到单例类池
      */
-    public static <T> void bindSingletonClassToPool(Class<T> clazz){
+    static <T> void bindSingletonClassToPool(Class<T> clazz){
         bindSingletonClassToPool(clazz, clazz);
     }
 

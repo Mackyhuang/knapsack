@@ -59,8 +59,9 @@ public class AppTest
     @Test
     public void enhanceWhat(){
         Knapsack knapsack = new Knapsack();
-        QualifierSack.bindQualifierClassToPool(Person.class, Stu.class);
-        QualifierSack.bindQualifierClassToPool(Person.class, Teacher.class);
+        knapsack.link(Person.class).with(Stu.class);
+        knapsack.link(Person.class).with(Teacher.class);
+
 //        ClassRoom classRoom = knapsack.sew().takeOutInstance(ClassRoom.class);
         ClassRoom classRoom = (ClassRoom) knapsack.sew().enhanceInstance(ClassRoom.class, SimpleAdapter.class, Recordlog.class);
         ClassRoom classRoom1 = (ClassRoom) knapsack.sew().enhanceInstance(ClassRoom.class, SimpleAdapter.class, Recordlog.class);
