@@ -9,8 +9,10 @@ import org.junit.Test;
 import vip.ifmm.knapsack.entity.*;
 import vip.ifmm.knapsack.core.Knapsack;
 import vip.ifmm.knapsack.core.QualifierSack;
+import vip.ifmm.knapsack.loader.PropertiesLoader;
 
 import java.lang.reflect.Method;
+import java.util.Properties;
 
 /**
  * Unit test for simple App.
@@ -67,5 +69,10 @@ public class AppTest
         System.out.println(classRoom.sleep(1));
     }
 
+    @Test
+    public void propertiesLoader(){
+        Properties loader = PropertiesLoader.loader("test.properties");
+        System.out.println(loader);
+    }
 
 }

@@ -1,5 +1,6 @@
 package vip.ifmm.knapsack.core;
 
+import vip.ifmm.knapsack.annotation.Component;
 import vip.ifmm.knapsack.exception.InjectionException;
 
 import javax.inject.Named;

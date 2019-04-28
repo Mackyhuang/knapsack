@@ -234,6 +234,11 @@ public class ProducingSack {
         return null;
     }
 
+    /**
+     * 判断当前的限定类池中是否有指定的对象的类
+     * 有的话就使用类信息实例化，然后把对象放进对象池
+     * 没有返回Null
+     */
     @SuppressWarnings("unchecked")
     private <T> T isTargetInQualifierClassPool(Class<?> parentClazz, Annotation[] annotationArr, Class<T> clazz){
         Map<Annotation, Class<?>> qualifierClassMapping = QualifierSack.qualifierClassPool.get(clazz);
