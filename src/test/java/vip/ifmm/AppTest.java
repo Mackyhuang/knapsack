@@ -29,7 +29,7 @@ public class AppTest
             new Runnable(){
                 @Override
                 public void run() {
-                    System.out.println(new Knapsack().sew().producingSack);
+                    //System.out.println(new Knapsack().sew().producingSack);
                 }
             }.run();
         }
@@ -59,12 +59,12 @@ public class AppTest
     @Test
     public void enhanceWhat(){
         Knapsack knapsack = new Knapsack();
-        knapsack.link(Person.class).with(Stu.class);
-        knapsack.link(Person.class).with(Teacher.class);
+//        knapsack.link(Person.class).with(Stu.class);
+//        knapsack.link(Person.class).with(Teacher.class);
 
-//        ClassRoom classRoom = knapsack.sew().takeOutInstance(ClassRoom.class);
-        ClassRoom classRoom = (ClassRoom) knapsack.sew().enhanceInstance(ClassRoom.class, SimpleAdapter.class, Recordlog.class);
-        ClassRoom classRoom1 = (ClassRoom) knapsack.sew().enhanceInstance(ClassRoom.class, SimpleAdapter.class, Recordlog.class);
+//        ClassRoom classRoom = knapsack.sew("test.properties").takeOutInstance(ClassRoom.class);
+        ClassRoom classRoom = (ClassRoom) knapsack.sew("test.properties").enhanceInstance(ClassRoom.class, SimpleAdapter.class, Recordlog.class);
+        ClassRoom classRoom1 = (ClassRoom) knapsack.enhanceInstance(ClassRoom.class, SimpleAdapter.class, Recordlog.class);
         System.out.println(classRoom1 == classRoom);
         System.out.println(classRoom);
         System.out.println(classRoom.sleep(1));
@@ -74,6 +74,23 @@ public class AppTest
     public void propertiesLoader(){
         Properties loader = PropertiesLoader.loader("test.properties");
         System.out.println(loader);
+    }
+
+    @Test
+    public void testClassforName(){
+        try {
+            Class<?> aClass = Class.forName("vip.ifmm.knapsack.entity.Person.class");
+            System.out.println(aClass);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void testSplit(){
+        String s = "Stu";
+        String[] ss = s.split("\\$");
+        System.out.println(ss.length);
     }
 
 }
