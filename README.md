@@ -1,4 +1,4 @@
-# knapsack
+# knapsack [![License](./license.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 -- 第一个版本已经发布 --
 ### 介绍
 **knapsack** **小背包**，
