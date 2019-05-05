@@ -6,9 +6,8 @@ import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
 import org.junit.Test;
-import vip.ifmm.knapsack.entity.*;
+import vip.ifmm.entity.*;
 import vip.ifmm.knapsack.core.Knapsack;
-import vip.ifmm.knapsack.core.QualifierSack;
 import vip.ifmm.knapsack.loader.PropertiesLoader;
 
 import java.lang.reflect.Method;
@@ -76,15 +75,6 @@ public class AppTest
         System.out.println(loader);
     }
 
-    @Test
-    public void testClassforName(){
-        try {
-            Class<?> aClass = Class.forName("vip.ifmm.knapsack.entity.Person.class");
-            System.out.println(aClass);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-    }
 
     @Test
     public void testSplit(){

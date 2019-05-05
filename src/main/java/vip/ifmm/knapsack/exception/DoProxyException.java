@@ -3,8 +3,8 @@ package vip.ifmm.knapsack.exception;
 /**
  * 动态代理相关异常
  * <p>Dynamic proxy-related anomalies</p>
- * @author: mackyhuang
- * <p>email: mackyhuang@163.com <p>
+ * author: mackyhuang
+ * <p>email: mackyhuang@163.co </p>
  * <p>date: 2019/4/25 </p>
  */
 public class DoProxyException extends RuntimeException{

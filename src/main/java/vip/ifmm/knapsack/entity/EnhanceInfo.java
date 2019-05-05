@@ -9,8 +9,8 @@ import java.util.Arrays;
  * 字段proxy，method，args是必定有的
  * result和exception啥时候有你肯定是知道的
  * <p>Parametric encapsulation classes when overriding proxy methods</p>
- * @author: mackyhuang
- * <p>email: mackyhuang@163.com <p>
+ * author: mackyhuang
+ * <p>email: mackyhuang@163.co </p>
  * <p>date: 2019/4/26 </p>
 */
 public class EnhanceInfo {

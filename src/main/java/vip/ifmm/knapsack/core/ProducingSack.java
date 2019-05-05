@@ -13,8 +13,8 @@ import java.util.function.Consumer;
 
 /**
  * 通过字段、构造函数、参数 实例化相应的对象
- * @author: mackyhuang
- * <p>email: mackyhuang@163.com <p>
+ * author: mackyhuang
+ * <p>email: mackyhuang@163.co </p>
  * <p>date: 2019/4/22 </p>
  */
 public class ProducingSack {
@@ -24,9 +24,9 @@ public class ProducingSack {
 
     /**
      * 从容器通过指定的Class获取一个相应的对象
-     * @param clazz
-     * @param <T>
-     * @return
+     * @param clazz 指定的类
+     * @return 指定的实例
+     * @param <T> 指定类的类型
      */
     public <T> T producingObject(Class<T> clazz){
         return producingObject(clazz, null);
@@ -35,10 +35,10 @@ public class ProducingSack {
     /**
      * 从容器通过指定的Class获取一个相应的对象
      * 并且可以通过Consumer对生成的对象做其他操作
-     * @param clazz
-     * @param consumer
-     * @param <T>
-     * @return
+     * @param clazz 指定的类
+     * @param consumer 附加功能
+     * @param <T> 指定类的类型
+     * @return 指定的实例
      */
     public <T> T producingObject(Class<T> clazz, Consumer<T> consumer){
         //判断单例对象池中是否有这个对象

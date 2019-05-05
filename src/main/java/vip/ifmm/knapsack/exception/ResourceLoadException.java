@@ -1,8 +1,8 @@
 package vip.ifmm.knapsack.exception;
 
 /**
- * @author: mackyhuang
- * <p>email: mackyhuang@163.com <p>
+ * author: mackyhuang
+ * <p>email: mackyhuang@163.co </p>
  * <p>date: 2019/4/28 </p>
  */
 public class ResourceLoadException extends RuntimeException{

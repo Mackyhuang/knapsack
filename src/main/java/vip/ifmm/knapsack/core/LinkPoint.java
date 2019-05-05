@@ -1,8 +1,8 @@
 package vip.ifmm.knapsack.core;
 
 /**
- * @author: mackyhuang
- * <p>email: mackyhuang@163.com <p>
+ * author: mackyhuang
+ * <p>email: mackyhuang@163.com </p>
  * <p>date: 2019/4/28 </p>
  */
 public class LinkPoint {

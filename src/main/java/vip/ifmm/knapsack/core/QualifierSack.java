@@ -14,8 +14,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 限定对象池和限定类池的操作类
- * @author: mackyhuang
- * <p>email: mackyhuang@163.com <p>
+ * author: mackyhuang
+ * <p>email: mackyhuang@163.co </p>
  * <p>date: 2019/4/22 </p>
  */
 public class QualifierSack {

@@ -5,8 +5,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 对类执行动态代理的对外类
- * @author: mackyhuang
- * <p>email: mackyhuang@163.com <p>
+ * author: mackyhuang
+ * <p>email: mackyhuang@163.co </p>
  * <p>date: 2019/4/23 </p>
  */
 public class EnhancementDriver {
@@ -17,6 +17,12 @@ public class EnhancementDriver {
     /**
      * 对外的封装的代理主类
      * 主要负责创建Enhancement，以及实例化adapter
+     * @param target 需要增强的对象
+     * @param adapter 增强业务适配器
+     * @param annotation 指定的增强注解
+     * @return 代理对象
+     * @throws IllegalAccessException 安全权限异常
+     * @throws InstantiationException 指定实例异常
      */
     public static Object prepare(Object target, Class adapter, Class annotation) throws IllegalAccessException, InstantiationException {
         //创建增强管理类
@@ -31,6 +37,11 @@ public class EnhancementDriver {
     }
 
     /**
+     *
+     * @param target 需要增强的对象
+     * @param adapter 增强业务适配器
+     * @param annotation 指定的增强注解
+     * @return
      * 将一个代理类放进proxyObjectPool，需要一个key，这个方法为你提供专属的key
      * 为保证相同类在不同注解和增强方法下在对象池中是不同的，这里将这三类信息的hashCode相加
      */

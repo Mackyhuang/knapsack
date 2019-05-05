@@ -14,17 +14,18 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
 /**
- * @author: mackyhuang
- * <p>email: mackyhuang@163.com <p>
+ * author: mackyhuang
+ * <p>email: mackyhuang@163.co </p>
  * <p>date: 2019/4/29 </p>
  */
 public class ClasspathPackageScanner implements PackageScanner {
     public static List<String> fullyQualifiedClassNameList = null;
     private String basePackage;
     private ClassLoader classLoader;
+
     /**
      * 初始化
-     * @param basePackage
+     * @param basePackage 需要扫描的包路径
      */
     public ClasspathPackageScanner(String basePackage) {
         this.basePackage = basePackage;
@@ -123,6 +124,8 @@ public class ClasspathPackageScanner implements PackageScanner {
 
     /**
      * 全限定类列表中是否 包含 某个类的简单类名
+     * @param className 类的简单名
+     * @return 类的全类名
      */
     public static String isContain(String className){
         if (Knapsack.fullyQualifiedClassNameList != null){

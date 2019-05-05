@@ -7,8 +7,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 单例对象池和和单例类池的操作类
- * @author: mackyhuang
- * <p>email: mackyhuang@163.com <p>
+ * author: mackyhuang
+ * <p>email: mackyhuang@163.co </p>
  * <p>date: 2019/4/22 </p>
  */
 public class SingletonSack {

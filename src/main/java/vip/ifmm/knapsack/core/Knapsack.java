@@ -12,8 +12,8 @@ import java.util.Set;
 
 
 /**
- * @author: mackyhuang
- * <p>email: mackyhuang@163.com <p>
+ * author: mackyhuang
+ * <p>email: mackyhuang@163.co </p>
  * <p>date: 2019/4/22 </p>
  */
 public class Knapsack {
@@ -25,7 +25,7 @@ public class Knapsack {
 
     /**
      * 无需使用到配置文件的初始化接口
-     * @return
+     * @return 背包容器
      */
     public Knapsack sew(){
         return sew(null);
@@ -36,6 +36,8 @@ public class Knapsack {
       * 对用实例化ProducingSack
       * 单例模式保证全局只有一个 ProducingSack
       * 加载配置文件 完成属性加载
+      * @param path 配置文件路径
+      * @return 背包容器
       */
     public Knapsack sew(String path){
         synchronized (Knapsack.class){
@@ -55,6 +57,8 @@ public class Knapsack {
     /**
      * 获取一个指定的实例
      * @param clazz 指定的实例的Class
+     * @return 指定的实例
+     * @param <T> 指定类的类型
      */
     public <T> T takeOutInstance(Class<T> clazz){
         return producingSack.producingObject(clazz);
@@ -69,6 +73,8 @@ public class Knapsack {
      * @param clazz 指定的实例的Class
      * @param adapter 实现EnhancementAdapter接口的实现类的CLass
      * @param annotation 自定义注解的Class
+     * @param <T> 指定类的类型
+     * @return 代理对象
      */
     public <T> Object enhanceInstance(Class<T> clazz, Class adapter, Class annotation){
         Object result = null;

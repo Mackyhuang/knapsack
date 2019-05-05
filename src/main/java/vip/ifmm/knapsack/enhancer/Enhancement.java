@@ -16,9 +16,9 @@ import java.lang.reflect.Proxy;
  * 如果你需要被代理的类，是一个不被final修饰的类, 那么会自动调用cglib动态带出
  * 否则的话会尝试使用jdk的动态代理，基于实现接口的代理
  * 当然，如果连接口都没有，那可就只能无情报错 (注意，这里报错是在调用处，你总是找不到一个类来接收它的赋值)
- * 将需要增强的业务操作，完成在这个接口的实现类中{@see EnhancementAdapter}
- * @author: mackyhuang
- * <p>email: mackyhuang@163.com <p>
+ * 将需要增强的业务操作，完成在这个接口的实现类中{EnhancementAdapter}
+ * author: mackyhuang
+ * <p>email: mackyhuang@163.co </p>
  * <p>date: 2019/4/23 </p>
  */
 public class Enhancement implements InvocationHandler, net.sf.cglib.proxy.InvocationHandler {
@@ -32,6 +32,9 @@ public class Enhancement implements InvocationHandler, net.sf.cglib.proxy.Invoca
 
     /**
      * 初始化类字段， 生成代理对象
+     * @param target 指定的实例
+     * @param adapter 实现EnhancementAdapter接口的实现类的CLass
+     * @param annotation 自定义注解的Class
      * @return 生成的代理对象
      */
     public Object doProxy(Object target, EnhancementAdapter adapter, Class annotation){
