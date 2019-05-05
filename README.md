@@ -92,15 +92,16 @@ maven中心仓库申请ing...
 那么，如果你把它改为
 ```
     ClassRoom classRoom = (ClassRoom) knapsack.enhanceInstance(ClassRoom.class, SimpleAdapter.class, Recordlog.class);
+    参数为
+    
+    ① 需要进行增强的类
+    
+    ② 实现 `EnhancementAdapter` 接口的类（业务实现处）
+    
+    ③ 增强标志注解（类中被标记此注解的方法才会被增强）
+    
+    这时就会返回一个已经被增强会的代理对象，直接使用即可
 ```
-参数为
 
-① 需要进行增强的类
-
-② 实现 `EnhancementAdapter` 接口的类（业务实现处）
-
-③ 增强标志注解（类中被标记此注解的方法才会被增强）
-
-这时就会返回一个已经被增强会的代理对象，直接使用即可
 
 
