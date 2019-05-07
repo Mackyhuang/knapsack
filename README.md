@@ -1,4 +1,4 @@
-# knapsack [![License](./license.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
+# knapsack [![Maven Central](./maven_central.svg)](https://mvnrepository.com/artifact/vip.ifmm/knapsack) [![License](./license.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 -- 第一个版本已经发布 --
 ### 介绍
 **knapsack** **小背包**，
@@ -17,7 +17,18 @@
 
 
 ### 安装教程
-maven中心仓库申请ing...
+maven项目的话直接在pom.xml中引入
+```
+<dependency>
+    <groupId>vip.ifmm</groupId>
+    <artifactId>knapsack</artifactId>
+    <version>1.0.0</version>
+</dependency>
+```
+当然啦，gradle的话就是这样
+```
+compile group: 'vip.ifmm', name: 'knapsack', version: '1.0.0'
+```
 
 ### 使用说明
 
